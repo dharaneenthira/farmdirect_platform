@@ -191,31 +191,49 @@ FarmDirect-SIH26033/
 
 ### Prerequisites
 - Python 3.10 or higher installed.
+- MySQL 8.0 or higher (or MariaDB) server running.
 - Modern web browser (Chrome, Edge, Firefox).
 
-### Step 1: Environment Configuration
-Copy the `.env.example` file to `.env`:
+### Step 1: Database Setup (MySQL)
+1. Start your MySQL service and log in to MySQL command line:
+   ```bash
+   mysql -u root -p
+   ```
+2. Create the database:
+   ```sql
+   CREATE DATABASE IF NOT EXISTS farmdirect_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   ```
+3. Initialize tables schema and seed demo data:
+   ```bash
+   mysql -u root -p farmdirect_db < database/schema.sql
+   mysql -u root -p farmdirect_db < database/seed.sql
+   ```
+
+### Step 2: Environment Configuration
+Copy `.env.example` to `.env` and fill in your local MySQL credentials:
 ```bash
-cd FarmDirect-SIH26033
 cp .env.example .env
 ```
+Ensure your `.env` contains:
+```env
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=farmdirect_db
+DB_USER=root
+DB_PASSWORD=your_mysql_password
+DATABASE_URL=mysql+pymysql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
+```
 
-### Step 2: Backend Setup & Run
-1. Create and activate a Python virtual environment:
-   ```bash
-   python -m venv venv
-   # On Windows:
-   venv\Scripts\activate
-   ```
-2. Install dependencies:
+### Step 3: Backend Setup & Server Execution
+1. Install backend dependencies:
    ```bash
    pip install -r backend/requirements.txt
    ```
-3. Start the Flask Backend Server:
+2. Start the Flask Backend Server:
    ```bash
    python backend/app.py
    ```
-4. Verify backend health endpoint in browser or terminal:
+3. Verify backend health endpoint in browser or terminal:
    ```bash
    GET http://127.0.0.1:5000/api/health
    ```
@@ -223,17 +241,21 @@ cp .env.example .env
    ```json
    {
        "status": "success",
-       "message": "FarmDirect backend is running"
+       "backend": "running",
+       "database": "connected"
    }
    ```
 
-### Step 3: Frontend Setup & Run
+### Step 4: Running Automated Tests (Pytest)
+Run the test suite (uses safe isolated SQLite test environment):
+```bash
+python -m pytest tests/
+```
+
+### Step 5: Frontend Setup & Run
 Serve the `frontend` directory using any HTTP server:
 ```bash
-# Option 1: Using Python built-in server
 python -m http.server 8000 --directory frontend
-
-# Option 2: Open frontend/index.html directly in a browser
 ```
 Navigate to `http://localhost:8000` to interact with the FarmDirect landing page.
 

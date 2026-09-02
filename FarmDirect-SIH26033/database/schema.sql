@@ -2,64 +2,80 @@
 -- FarmDirect Platform Database Schema Blueprint
 -- Problem Statement ID: SIH26033 | Team: Shadow Stack
 -- Database Engine: MySQL 8.0+
--- Description: Architecture definition for planned entities.
--- NOTE: STEP 1 Foundation - Table definitions prepared for future execution.
+-- Description: Production-ready DDL schema for core entities.
 -- =============================================================================
 
 CREATE DATABASE IF NOT EXISTS farmdirect_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE farmdirect_db;
 
--- 1. Users Entity Architecture
--- Stores core authentication & role metadata (FARMER, BUYER, ADMIN)
--- CREATE TABLE IF NOT EXISTS users (
---     id INT AUTO_INCREMENT PRIMARY KEY,
---     full_name VARCHAR(100) NOT NULL,
---     phone_number VARCHAR(15) UNIQUE NOT NULL,
---     email VARCHAR(120) UNIQUE,
---     password_hash VARCHAR(255) NOT NULL,
---     role ENUM('FARMER', 'BUYER', 'ADMIN') NOT NULL,
---     is_verified BOOLEAN DEFAULT FALSE,
---     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
---     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
--- );
+-- 1. Core Users Table
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(120) UNIQUE,
+    phone VARCHAR(20) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role ENUM('farmer', 'buyer', 'admin') NOT NULL,
+    district VARCHAR(100),
+    state VARCHAR(100),
+    is_active BOOLEAN DEFAULT TRUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+    INDEX idx_users_email (email),
+    INDEX idx_users_phone (phone),
+    INDEX idx_users_role (role),
+    INDEX idx_users_district (district),
+    INDEX idx_users_state (state),
+    INDEX idx_users_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 2. Farmer Profiles Entity Architecture
--- CREATE TABLE IF NOT EXISTS farmer_profiles (...);
+-- 2. Farmer Profiles Table
+CREATE TABLE IF NOT EXISTS farmer_profiles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNIQUE NOT NULL,
+    farm_name VARCHAR(150),
+    crop_types TEXT,
+    land_area DECIMAL(10,2),
+    location VARCHAR(255),
+    verification_status VARCHAR(50) DEFAULT 'pending' NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+    CONSTRAINT fk_farmer_profiles_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 3. Buyer Profiles Entity Architecture
--- CREATE TABLE IF NOT EXISTS buyer_profiles (...);
+-- 3. Buyer Profiles Table
+CREATE TABLE IF NOT EXISTS buyer_profiles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNIQUE NOT NULL,
+    business_name VARCHAR(150),
+    business_type VARCHAR(100),
+    verification_status VARCHAR(50) DEFAULT 'pending' NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+    CONSTRAINT fk_buyer_profiles_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 4. Products Entity Architecture
--- CREATE TABLE IF NOT EXISTS products (...);
+-- 4. Admin Profiles Table
+CREATE TABLE IF NOT EXISTS admin_profiles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNIQUE NOT NULL,
+    department VARCHAR(100),
+    permissions TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+    CONSTRAINT fk_admin_profiles_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 5. Market Prices Entity Architecture
--- CREATE TABLE IF NOT EXISTS market_prices (...);
-
--- 6. Price Predictions Entity Architecture
--- CREATE TABLE IF NOT EXISTS price_predictions (...);
-
--- 7. Demand Forecasts Entity Architecture
--- CREATE TABLE IF NOT EXISTS demand_forecasts (...);
-
--- 8. Matches Entity Architecture
--- CREATE TABLE IF NOT EXISTS matches (...);
-
--- 9. Orders & Order Items Entity Architecture
--- CREATE TABLE IF NOT EXISTS orders (...);
--- CREATE TABLE IF NOT EXISTS order_items (...);
-
--- 10. Deliveries Entity Architecture
--- CREATE TABLE IF NOT EXISTS deliveries (...);
-
--- 11. Transactions Entity Architecture
--- CREATE TABLE IF NOT EXISTS transactions (...);
-
--- 12. Reviews & Ratings Architecture
--- CREATE TABLE IF NOT EXISTS reviews (...);
--- CREATE TABLE IF NOT EXISTS ratings (...);
-
--- 13. Notifications Architecture
--- CREATE TABLE IF NOT EXISTS notifications (...);
-
--- 14. Admin Activity Audit Architecture
--- CREATE TABLE IF NOT EXISTS admin_activity (...);
+-- 5. Audit Logs Table
+CREATE TABLE IF NOT EXISTS audit_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    action VARCHAR(100) NOT NULL,
+    entity_type VARCHAR(100),
+    entity_id INT,
+    ip_address VARCHAR(45),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    CONSTRAINT fk_audit_logs_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+    INDEX idx_audit_logs_user_id (user_id),
+    INDEX idx_audit_logs_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

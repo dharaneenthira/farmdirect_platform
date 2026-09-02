@@ -53,6 +53,11 @@ def create_app(config_class=None):
     # Register Centralized Error Handlers
     register_error_handlers(app)
 
+    @app.teardown_appcontext
+    def shutdown_session(exception=None):
+        from backend.db.session import db_session
+        db_session.remove()
+
     return app
 
 
