@@ -1,0 +1,36 @@
+.card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.role-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--spacing-xl) var(--spacing-lg);
+  background-color: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  border-top: 6px solid var(--color-primary);
+}
+
+.role-card.buyer {
+  border-top-color: var(--color-secondary);
+}
+
+.role-card.admin {
+  border-top-color: var(--color-accent);
+}
+
+.role-icon {
+  font-size: 3.5rem;
+  margin-bottom: var(--spacing-md);
+}

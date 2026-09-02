@@ -1,0 +1,21 @@
+.site-header {
+  width: 100%;
+}
+
+.site-main {
+  min-height: calc(100vh - 160px);
+  padding: var(--spacing-xl) 0;
+}
+
+.site-footer {
+  background-color: var(--color-primary);
+  color: white;
+  padding: var(--spacing-lg) 0;
+  text-align: center;
+  margin-top: var(--spacing-xl);
+}
+
+.site-footer p {
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 0;
+}

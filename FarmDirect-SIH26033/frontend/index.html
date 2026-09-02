@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="FarmDirect (SIH26033) - Direct Agricultural Marketplace connecting farmers directly to buyers.">
+  <title>FarmDirect | Direct Agricultural Marketplace (SIH26033)</title>
+
+  <!-- Base & Layout Stylesheets -->
+  <link rel="stylesheet" href="css/base/reset.css">
+  <link rel="stylesheet" href="css/base/variables.css">
+  <link rel="stylesheet" href="css/base/typography.css">
+  <link rel="stylesheet" href="css/components/header.css">
+  <link rel="stylesheet" href="css/components/buttons.css">
+  <link rel="stylesheet" href="css/components/cards.css">
+  <link rel="stylesheet" href="css/layouts/grid.css">
+  <link rel="stylesheet" href="css/layouts/layout.css">
+  <link rel="stylesheet" href="css/pages/landing.css">
+</head>
+<body>
+
+  <!-- Site Navigation Header -->
+  <header class="site-header navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="brand">
+        <div class="brand-logo">🌾</div>
+        <span class="brand-text" data-i18n="brand.name">FarmDirect</span>
+      </a>
+
+      <!-- Centralized i18n Language Selector -->
+      <div class="language-selector-wrapper">
+        <span class="lang-label">🌐 <span data-i18n="lang.select.label">Language</span>:</span>
+        <select id="languageSelect" class="language-select" aria-label="Select Language">
+          <option value="en">English</option>
+          <option value="ta">தமிழ்</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Body -->
+  <main class="site-main">
+    <div class="container">
+
+      <!-- Hero Section -->
+      <section class="hero">
+        <span class="hero-tag" data-i18n="sih.tag">SIH 2026 Prototype | Problem ID: SIH26033</span>
+        <h1 class="hero-title" data-i18n="hero.title">Connecting Farmers Directly to Buyers</h1>
+        <p class="hero-subtitle" data-i18n="hero.subtitle">
+          Eliminating middleman exploitation, ensuring fair prices for farmers, and delivering fresh produce to buyers at transparent prices.
+        </p>
+
+        <!-- Dynamic API Health Status Badge -->
+        <div class="status-badge" id="apiStatusBadge">
+          <span class="status-dot" id="statusDot"></span>
+          <span id="statusText" data-i18n="hero.status.checking">Checking API connection...</span>
+        </div>
+      </section>
+
+      <!-- Role Entry Portals Section -->
+      <section class="roles-section">
+        <div class="role-section-title">
+          <h2 data-i18n="role.section.title">Select User Portal</h2>
+          <p data-i18n="role.section.subtitle">Access localized services tailored for each agricultural stakeholder</p>
+        </div>
+
+        <div class="grid grid-3">
+          
+          <!-- 1. FARMER PORTAL -->
+          <article class="card role-card farmer">
+            <div class="role-icon">👨‍🌾</div>
+            <h3 data-i18n="role.farmer.title">Farmer Portal</h3>
+            <p data-i18n="role.farmer.desc">List harvested produce, track market mandi prices, run profit simulators, and receive AI harvest recommendations.</p>
+            <button class="btn btn-farmer" onclick="alert('Farmer Portal - Step 1 Foundation Mode')" aria-label="Enter Farmer Portal">
+              <span class="btn-icon">🌾</span>
+              <span data-i18n="role.farmer.btn">Enter Farmer Portal</span>
+            </button>
+          </article>
+
+          <!-- 2. BUYER PORTAL -->
+          <article class="card role-card buyer">
+            <div class="role-icon">🛒</div>
+            <h3 data-i18n="role.buyer.title">Buyer Portal</h3>
+            <p data-i18n="role.buyer.desc">Browse verified produce listings directly from local farmers, submit bids, and request partial order fulfillment.</p>
+            <button class="btn btn-buyer" onclick="alert('Buyer Portal - Step 1 Foundation Mode')" aria-label="Enter Buyer Portal">
+              <span class="btn-icon">📦</span>
+              <span data-i18n="role.buyer.btn">Enter Buyer Portal</span>
+            </button>
+          </article>
+
+          <!-- 3. ADMIN COMMAND CENTER -->
+          <article class="card role-card admin">
+            <div class="role-icon">🛡️</div>
+            <h3 data-i18n="role.admin.title">Admin Command Center</h3>
+            <p data-i18n="role.admin.desc">Monitor market transactions, detect price anomalies, inspect suspicious activities, and review impact analytics.</p>
+            <button class="btn btn-admin" onclick="alert('Admin Command Center - Step 1 Foundation Mode')" aria-label="Enter Admin Center">
+              <span class="btn-icon">📊</span>
+              <span data-i18n="role.admin.btn">Enter Admin Center</span>
+            </button>
+          </article>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <p data-i18n="footer.copyright">© 2026 FarmDirect | Team Shadow Stack | Smart India Hackathon 2026</p>
+      <small style="opacity: 0.7;" data-i18n="footer.disclaimer">Step 1 Foundation Phase - System Architecture Prototype</small>
+    </div>
+  </footer>
+
+  <!-- Centralized Translation Architecture Scripts -->
+  <script src="js/i18n/translations.js"></script>
+  <script src="js/i18n/i18n.js"></script>
+  <script src="js/utils/constants.js"></script>
+  <script src="js/utils/helpers.js"></script>
+  <script src="js/api/api-client.js"></script>
+
+  <!-- Frontend Runtime Logic -->
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const statusDot = document.getElementById('statusDot');
+      const statusText = document.getElementById('statusText');
+
+      // Test Backend Connection GET /api/health
+      const healthData = await ApiClient.checkHealth();
+      if (healthData && healthData.status === 'success') {
+        statusDot.className = 'status-dot online';
+        statusText.setAttribute('data-i18n', 'hero.status.online');
+      } else {
+        statusDot.className = 'status-dot offline';
+        statusText.setAttribute('data-i18n', 'hero.status.offline');
+      }
+
+      // Re-apply translation engine to update status badge text
+      if (typeof i18n !== 'undefined') {
+        i18n.updateDOM();
+      }
+    });
+  </script>
+</body>
+</html>
