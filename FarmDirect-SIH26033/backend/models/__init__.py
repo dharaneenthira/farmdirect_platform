@@ -9,6 +9,11 @@ from .user import (
     BuyerProfile,
     AdminProfile,
     AuditLog,
+    AdminActivity,
+    ROLE_FARMER,
+    ROLE_BUYER,
+    ROLE_ADMIN,
+    VALID_ROLES,
 )
 from .product import ProductPlaceholder
 from .order import OrderPlaceholder
@@ -20,6 +25,11 @@ __all__ = [
     "BuyerProfile",
     "AdminProfile",
     "AuditLog",
+    "AdminActivity",
+    "ROLE_FARMER",
+    "ROLE_BUYER",
+    "ROLE_ADMIN",
+    "VALID_ROLES",
     "ProductPlaceholder",
     "OrderPlaceholder",
 ]

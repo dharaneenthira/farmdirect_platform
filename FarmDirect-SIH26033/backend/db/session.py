@@ -2,9 +2,12 @@
 SQLAlchemy Engine and Session Management Architecture
 Problem Statement ID: SIH26033 | Team: Shadow Stack
 """
+
 from flask import current_app, has_app_context
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.pool import StaticPool
+
 from backend.config import get_config
 
 
@@ -20,9 +23,21 @@ def create_db_engine(uri=None):
     if uri is None:
         uri = get_db_url()
 
-    engine_kwargs = {"pool_pre_ping": True}
-    if not uri.startswith("sqlite"):
-        engine_kwargs.update({"pool_size": 10, "max_overflow": 20})
+    engine_kwargs = {}
+
+    if uri.startswith("sqlite"):
+        engine_kwargs["connect_args"] = {"check_same_thread": False}
+
+        if ":memory:" in uri:
+            engine_kwargs["poolclass"] = StaticPool
+    else:
+        engine_kwargs.update(
+            {
+                "pool_pre_ping": True,
+                "pool_size": 10,
+                "max_overflow": 20,
+            }
+        )
 
     return create_engine(uri, **engine_kwargs)
 
@@ -31,12 +46,17 @@ def create_db_engine(uri=None):
 engine = create_db_engine()
 
 # Thread-safe Scoped Session Factory
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine,
+)
+
 db_session = scoped_session(SessionLocal)
 
 
 def get_db():
-    """Dependency helper to retrieve database session"""
+    """Dependency helper to retrieve database session."""
     session = db_session()
     try:
         yield session
@@ -51,17 +71,25 @@ def check_db_connection() -> bool:
     """
     try:
         current_engine = db_session.get_bind()
+
         with current_engine.connect() as connection:
             connection.execute(text("SELECT 1"))
+
         return True
     except Exception:
         return False
 
 
-def init_db(target_engine=None):
-    """Initialize database tables from registered SQLAlchemy models"""
-    from backend.models import Base
+def init_db(uri=None, create_tables=True):
+    """Initialize database tables from registered SQLAlchemy models."""
+    from backend.models.base import Base
+    import backend.models  # noqa: F401
 
-    if target_engine is None:
-        target_engine = db_session.get_bind()
-    Base.metadata.create_all(bind=target_engine)
+    global engine
+
+    if uri:
+        engine = create_db_engine(uri)
+        db_session.configure(bind=engine)
+
+    if create_tables:
+        Base.metadata.create_all(bind=engine)

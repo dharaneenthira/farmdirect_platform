@@ -257,11 +257,29 @@ Serve the `frontend` directory using any HTTP server:
 ```bash
 python -m http.server 8000 --directory frontend
 ```
-Navigate to `http://localhost:8000` to interact with the FarmDirect landing page.
+### Step 4: Running Automated Tests
+Run the Pytest test suite to verify health, authentication, and role authorization:
+```bash
+python -m pytest
+```
 
 ---
 
-## 13. Development Rules
+## 13. Authentication & RBAC API Usage
+
+### Endpoints
+- **Register:** `POST /api/auth/register`
+- **Login:** `POST /api/auth/login`
+- **Logout:** `POST /api/auth/logout`
+- **Profile:** `GET /api/auth/profile`, `PUT /api/auth/profile`
+- **Protected Routes:**
+  - `GET /api/farmer/dashboard` (Requires `FARMER` or `ADMIN` role)
+  - `GET /api/buyer/dashboard` (Requires `BUYER` or `ADMIN` role)
+  - `GET /api/admin/metrics` (Requires `ADMIN` role)
+
+---
+
+## 14. Development Rules
 1. Maintain strict modularity across Frontend, Backend, Database, and AI folders.
 2. Keep code clean and understandable for student developer team members.
 3. Do NOT hardcode secrets, API keys, or database credentials. Always use `.env`.
@@ -270,9 +288,10 @@ Navigate to `http://localhost:8000` to interact with the FarmDirect landing page
 
 ---
 
-## 14. Future Implementation Roadmap
-- **Phase 1 (Current Step 1):** Clean project foundation, Flask API architecture, dynamic i18n framework, landing page, and documentation.
-- **Phase 2 (Step 2):** Authentication, Role-based access control (RBAC), and User Profiles.
+## 15. Future Implementation Roadmap
+- **Phase 1:** Clean project foundation, Flask API architecture, dynamic i18n framework, landing page, and documentation.
+- **Phase 2 (Completed):** Authentication, Role-based access control (RBAC), Werkzeug password security, and User/Profile models.
 - **Phase 3 (Step 3):** Product listings, Mandi price data ingestion, and Agricultural Marketplace.
 - **Phase 4 (Step 4):** AI Price Prediction and Demand Forecasting pipelines.
 - **Phase 5 (Step 5):** Order management, partial matching, smart logistics, and payment settlement.
+
