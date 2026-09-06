@@ -165,3 +165,35 @@ def test_audit_logs_creation(db_session):
     fetched_log = db_session.query(AuditLog).filter_by(action="CREATE_USER").first()
     assert fetched_log is not None
     assert fetched_log.user_id == admin_user.id
+
+
+def test_products_schema_and_seed_sql():
+    """
+    Verify schema.sql and seed.sql definitions for products table, indexes, and FK constraints.
+    """
+    import os
+
+    schema_path = os.path.join(os.path.dirname(__file__), "..", "database", "schema.sql")
+    with open(schema_path, "r", encoding="utf-8") as f:
+        schema_sql = f.read()
+
+    assert "CREATE TABLE IF NOT EXISTS products" in schema_sql
+    assert "farmer_id INT NOT NULL" in schema_sql
+    assert "name VARCHAR(150) NOT NULL" in schema_sql
+    assert "category VARCHAR(100) NOT NULL" in schema_sql
+    assert "quantity DECIMAL(10,2) NOT NULL" in schema_sql
+    assert "unit VARCHAR(20)" in schema_sql
+    assert "asking_price DECIMAL(10,2) NOT NULL" in schema_sql
+    assert "status VARCHAR(50)" in schema_sql
+    assert "CONSTRAINT fk_products_farmer FOREIGN KEY (farmer_id) REFERENCES users(id) ON DELETE CASCADE" in schema_sql
+    assert "INDEX idx_products_farmer_id (farmer_id)" in schema_sql
+    assert "INDEX idx_products_name (name)" in schema_sql
+    assert "INDEX idx_products_category (category)" in schema_sql
+    assert "INDEX idx_products_status (status)" in schema_sql
+    assert "INDEX idx_products_created_at (created_at)" in schema_sql
+
+    seed_path = os.path.join(os.path.dirname(__file__), "..", "database", "seed.sql")
+    with open(seed_path, "r", encoding="utf-8") as f:
+        seed_sql = f.read()
+
+    assert "INSERT INTO products" in seed_sql

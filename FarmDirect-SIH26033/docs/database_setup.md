@@ -62,7 +62,7 @@ DATABASE_URL=mysql+pymysql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${D
 
 ### Option A: Direct MySQL Command Line Execution
 
-1. **Initialize DDL Schema** (`users`, `farmer_profiles`, `buyer_profiles`, `admin_profiles`, `audit_logs`):
+1. **Initialize DDL Schema** (`users`, `farmer_profiles`, `buyer_profiles`, `admin_profiles`, `audit_logs`, `products`):
    ```bash
    mysql -u root -p farmdirect_db < database/schema.sql
    ```

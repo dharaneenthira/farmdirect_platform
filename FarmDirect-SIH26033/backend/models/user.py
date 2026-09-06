@@ -73,6 +73,9 @@ class User(Base):
         "AdminProfile", back_populates="user", uselist=False, cascade="all, delete-orphan"
     )
     audit_logs = relationship("AuditLog", back_populates="user", foreign_keys="AuditLog.user_id")
+    products = relationship(
+        "Product", back_populates="farmer", cascade="all, delete-orphan"
+    )
 
     def get_role(self):
         return RoleString(self._role) if self._role else None
@@ -96,6 +99,7 @@ class User(Base):
     @is_verified.setter
     def is_verified(self, value):
         self._is_verified = bool(value)
+
 
     def set_password(self, password: str):
         """Hashes password securely using Werkzeug."""

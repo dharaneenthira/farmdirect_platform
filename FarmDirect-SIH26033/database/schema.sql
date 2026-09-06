@@ -79,3 +79,25 @@ CREATE TABLE IF NOT EXISTS audit_logs (
     INDEX idx_audit_logs_user_id (user_id),
     INDEX idx_audit_logs_created_at (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 6. Products Table
+CREATE TABLE IF NOT EXISTS products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    farmer_id INT NOT NULL,
+    name VARCHAR(150) NOT NULL,
+    category VARCHAR(100) NOT NULL,
+    description TEXT,
+    quantity DECIMAL(10,2) NOT NULL,
+    unit VARCHAR(20) DEFAULT 'kg' NOT NULL,
+    asking_price DECIMAL(10,2) NOT NULL,
+    location VARCHAR(255),
+    status VARCHAR(50) DEFAULT 'active' NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+    CONSTRAINT fk_products_farmer FOREIGN KEY (farmer_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_products_farmer_id (farmer_id),
+    INDEX idx_products_name (name),
+    INDEX idx_products_category (category),
+    INDEX idx_products_status (status),
+    INDEX idx_products_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

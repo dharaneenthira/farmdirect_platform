@@ -15,7 +15,7 @@ from .user import (
     ROLE_ADMIN,
     VALID_ROLES,
 )
-from .product import ProductPlaceholder
+from .product import Product
 from .order import OrderPlaceholder
 
 __all__ = [
@@ -30,6 +30,7 @@ __all__ = [
     "ROLE_BUYER",
     "ROLE_ADMIN",
     "VALID_ROLES",
-    "ProductPlaceholder",
+    "Product",
+
     "OrderPlaceholder",
 ]

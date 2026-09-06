@@ -40,3 +40,10 @@ VALUES
 (3, 'SYSTEM_INIT', 'SYSTEM', 0, '127.0.0.1'),
 (1, 'FARMER_REGISTRATION', 'user', 1, '127.0.0.1'),
 (2, 'BUYER_REGISTRATION', 'user', 2, '127.0.0.1');
+
+-- 6. Insert Sample Products
+INSERT INTO products (id, farmer_id, name, category, description, quantity, unit, asking_price, location, status)
+VALUES
+(1, 1, 'Organic Fresh Tomatoes', 'Vegetables', 'Farm-fresh organic red tomatoes harvested daily.', 500.00, 'kg', 35.00, 'Coimbatore', 'active'),
+(2, 1, 'Premium Sona Masoori Paddy', 'Grains', 'High quality raw paddy direct from farm.', 1000.00, 'kg', 42.50, 'Coimbatore', 'active')
+ON DUPLICATE KEY UPDATE name=VALUES(name), asking_price=VALUES(asking_price);
